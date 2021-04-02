@@ -15,15 +15,24 @@ class WordController extends Controller
     public function create(Request $request)
     {
 
+        $text = $request->text;
+
+        if(!$request->text){
+            $text = '';
+        }
+
         if(Word::count() === 0){
             try{
+
+
+
                 $word= new Word();
-                $word->text= $request->text;
+                $word->text= $text;
                 $word->save();
                 return $word;
 
             }catch (\Exception $e){
-                return response()->json(['status' => 'false'], 500);
+                return response()->json(['status' => $e], 500);
             }
         }
         else {
@@ -31,7 +40,7 @@ class WordController extends Controller
                 $id= Word::first();
                 $id=$id->id;
                 $word = Word::find($id);
-                $word->text= $request->text;
+                $word->text= $text;
                 $word->save();
 
                 return response()->json([
@@ -40,7 +49,7 @@ class WordController extends Controller
 
                 ], 200);
             } catch (\Exception $e) {
-                return response()->json(['status' => 'false'], 500);
+                return response()->json(['status' => $e], 500);
             }
 
         }
